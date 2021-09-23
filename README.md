@@ -16,19 +16,19 @@
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1 - 1st Semester
 
-1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW1) 
+1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW1) - Probablity based excersizes
 
-2. [Homework - 2](https://github.com/shahzad744/sds-hw2)
+2. [Homework - 2](https://github.com/shahzad744/sds-hw2) - Stock, Dependency and Graphs
 
-3. [Homework - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW3)
+3. [Homework - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW3) - Open Bugs based assignment. 
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 2
 
-1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework%20-1)
+1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework%20-1) - Answered specific questions usig Bayesian analysis. 
 
-2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework-2) 
+2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework-2) - Using Dugong’s data answering specific questions. 
 
-  [Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project)
+  [Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project) - Fully Bayesian Analysis on FEV(forced expiratory volume) dataset. 
 
 ## CLOUD COMPUTING:
 
