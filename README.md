@@ -12,7 +12,7 @@
 
 ## FUNDAMENTALS OF DATA SCIENCE AND LABORATORY
 
-- [Final Project](https://github.com/ihassantariq/FDS-Final-Project)
+  [Final Project](https://github.com/ihassantariq/FDS-Final-Project)
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1
 
@@ -28,36 +28,34 @@
 
 2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework-2) 
 
-- [Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project)
+  [Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project)
 
 ## CLOUD COMPUTING:
 
- - [Project Report](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/CC/CC-Project-Report-Final.pdf)
+  [Project Report](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/CC/CC-Project-Report-Final.pdf)
 
 ## NEURAL NETWORKS FOR DATA SCIENCE APPLICATIONS
 
- - [Project](https://github.com/ihassantariq/NNDS_HW2_Dogs_Classifier)
+   [Project](https://github.com/ihassantariq/NNDS_HW2_Dogs_Classifier)
 
 ## DATA PRIVACY AND SECURITY 
 
-- [Project](https://github.com/ihassantariq/DPSElectionVoting)
+  [Project](https://github.com/ihassantariq/DPSElectionVoting)
 
 ## BIG DATA FOR OFFICIAL STATISTICS
 
-- [Project]()
+  [Project](TBD)
 
 ## EARTH OBSERVATION DATA ANALYSIS
 
-- [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK01.pdf)
+1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK01.pdf)
 
-- [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK02.pdf)
+2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK02.pdf)
 
-- [Homework - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK03.pdf)
+3. [Homework - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK03.pdf)
 
 ## OPTIMIZATION METHODS FOR MACHINE LEARNING
 
-- [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1)
+ 1. [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1)
 
-- [Project - 2](TBD) 
-
-
+ 2. [Project - 2](TBD) 
