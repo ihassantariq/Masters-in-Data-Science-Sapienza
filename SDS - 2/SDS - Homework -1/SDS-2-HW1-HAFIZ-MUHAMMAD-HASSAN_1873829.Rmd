@@ -1,0 +1,384 @@
+---
+title: "Homework #01"
+output: html_document
+---
+
+<h4>Name: Hafiz Muhammad Hassan </h4>
+<h4>Matricula: 1873829 </h4>
+
+
+QUESTION # 1:
+
+1. Consider the car accident in Rome (year 2016) contained in the data.frame named roma. Select your data
+using the following code
+mydata <- subset(roma,subset=sign_up_number==104)
+str(mydata)
+## ’data.frame’: 19 obs. of 5 variables:
+## $ week : int 2 3 4 5 6 7 8 9 10 11 ...
+## $ weekday : chr "Saturday" "Saturday" "Saturday" "Saturday" ...
+## $ hour : int 9 9 9 9 9 9 9 9 9 9 ...
+## $ car_accidents : int 3 2 4 1 4 8 4 8 3 5 ...
+## $ sign_up_number: int 104 104 104 104 104 104 104 104 104 104 ...
+The column car_accidents contains the number of car accidents Yi = yi occurred in a specific weekday
+during a specific hour of the day in some of the weeks of 2016. Using the observed outcomes of the number of
+car accidents do a fully Bayesian analysis using as a statistical model a conditionally i.i.d. Poisson distribution
+with unknown parameter. Take into account that it is known that the average number of hourly car accidents
+occurring in Rome during the day is 3.22. In particular do the following:
+1. describe your observed data
+2. justify as best you can your choices for the ingredients of your Bayesian model especially for the choices
+you make for the prior distribution
+3. report your main inferential findings using your posterior distribution of the unknown parameter in
+terms of
+a) possible alternative point estimates with comments on how similar they are and, in case, why
+b) posterior uncertainty
+c) interval estimates justifying your (possibly best) choices
+d) suitable comments on the differences between the prior and the posterior
+e) (optional) Provide a formal definition of the posterior predictive distribution of Ynext|y1, ..., yn and
+try to compare the posterior predictive distribution for a future observable with the actually observed
+data
+
+First of all for solving the excersize I loaded the data using load function. 
+
+```{r setup, include=FALSE}
+load("2021_homework_01.RData") # Loading the rdata file 
+```
+
+1. Describe your observed data?
+
+Solution: As described in the question I subset the data
+
+```{r}
+mydata <- subset(roma,subset=sign_up_number==104)
+str(mydata)
+
+```
+
+
+```{r}
+head(mydata)
+```
+Lets look at the qualitative comparison of the data. We know that there are total 19 observation from the data and all the accident happen between 09-10:00 on Saturday. Lets plot a graph to see 
+
+```{r, fig.align='center'}
+par(oma=c(3,1,3,3))
+plot(prop.table(table(mydata$car_accidents)),
+main="Emperical distribution of number of car accidents",
+xlab="# car accidents",ylab="relative frequency",ylim=c(0,0.9))
+```
+
+We can see that highest car accidents are 8. Lets look at mean, median, standard deviation and variance. 
+
+```{r}
+cat ("Mean of car accidents are:",  mean(mydata$car_accidents), fill = TRUE)
+cat ("Median of car accidents are:",  median(mydata$car_accidents, na.rm = TRUE), fill = TRUE)
+cat ("Standard deviation of car accidents are:",  sd(mydata$car_accidents), fill = TRUE)
+cat ("Variance of car accidents are:",  var(mydata$car_accidents), fill = TRUE)
+
+
+```
+
+The mean number of observed car accident is 3.89 while the median is 3 and the most frequent number of
+car accident is 3. The variability of this empirical distribution can be measured in terms of the standard
+deviation 2.05 or the variance 4.21 which perhaps is in line with respect to the expected equality of mean and
+variance in a Poisson distribution.
+
+
+2. Justify as best you can your choices for the ingredients of your Bayesian model especially for the choices
+you make for the prior distribution?
+
+Solution:
+
+Taking into the account that average number of car accidents occuring in rome during the day is 3.22. But for us it was 3 and it accounts only between 09:00-10:00 only on Saturday. 
+
+I would be using conjugate prior on the poison rate parameter. Because of this choice the posterior
+analysis can be carried out in closed form with the appropriate posterior updating of the Gamma parameters.
+
+
+Indeed in order to do so I can look graphically at the the following curve of the probability of the interval [0,15]
+for a Gamma distribution in which the rate parameter β prior is constrained to be automatically determined
+by the shape parameter  α prior so that
+
+
+$$
+\frac{ \alpha_{prior}}{\beta_{prior}} = 3.22 \\
+\frac{ \alpha_{prior}}{3.22} = \beta_{prior} \\
+$$
+```{r, fig.align='center'}
+shape_to_consider = 0.29 #testing the shape best we have got
+
+prior_prob <- function(shape){
+pgamma(15,shape=shape,rate=shape/3.22)
+}
+curve(prior_prob,from=0.01,to=5,n=40000)
+abline(h=0.95,col="blue",lwd=3)
+abline(v=shape_to_consider,col="red",lwd=3,lty=3)
+```
+
+
+it is clear that a value close to 0.29 meet the prior requirements. With this choice one get the following shape
+of the prior distribution which shows a monotonically decreasing shape
+
+```{r, fig.align='center'}
+curve(dgamma(x,shape=0.29,rate=0.29/3.22))
+```
+
+There can be multiple other choices of hyperparameters. From above it is concluded that we are going to stick with $$( \alpha _{prior} = 0.29 , \beta_{prior} = 0.09) $$ 
+
+Also, from above we have around 74 car accidents in 19 observation. 
+
+```{r}
+sum(mydata$car_accidents)
+```
+
+(3)report on your posterior distribution of the unknown parameter in terms of
+a) possible alternative point estimates with comments on how similar they are and, in case, why
+b) posterior uncertainty
+c) interval estimates justifying your (possibly best) choices
+d) suitable comments on the differences between the prior and the posterior
+
+Solution:
+
+Once n (conditionalli i.i.d.) Poisson counts $$y_{i}$$ are observed and the prior is a conjugate Gamma distribution
+the posterior distribution is in turn a Gamma distribution with updated parameters
+
+$$ \alpha_{posterior} = \alpha_{prior} +X\sum_{i=1}^{n}y_{i} = 0.29 + 74 = 74.29$$
+$$ \beta_{posterior} = \beta_{prior} + n = 0.29 + 19 = 19.09$$
+which can be represented graphically together with alternative summary statistics such as the posterior mean
+$$E_{π}(θ|y_1,...,y_n)[θ]=\frac{ 74.2}{19.09}  = 3.8915669$$
+  the posterior median
+  
+  
+```{r}
+# posterior median
+shape_prior <- 0.29
+rate_prior <- 0.09
+shape_post <- 74.29
+rate_post <- 19.09
+qgamma(0.5,shape=shape_post,rate=rate_post)
+```
+or the posterior mode which corresponds to the following closed form formula whenever the shape parameter is greater than 1
+
+$$Mo_π(θ|y_1,...,y_n)[θ] =\frac{ \alpha_{posterior} − 1}{ \beta_{posterio}} = 3.839183$$
+
+But we know that the best choice is always HPD interval
+
+
+```{r}
+library(TeachingDemos)
+# ?hpd
+HPD_interval_095 <- hpd(qgamma, shape=shape_post, rate=rate_post, conf=0.95)
+HPD_interval_095
+```
+
+We also know that HPD at 0.95 is always narrower than equal tail credible interval. 
+
+lets look at that one. 
+
+```{r}
+# equal tail
+equal_tail_095 <- c(lower=qgamma(0.025, shape=shape_post, rate=rate_post), upper=qgamma(0.975, shape=shape_post, rate=rate_post))
+equal_tail_095
+```
+
+
+Now if we compare between prior and posterior distribution. We can see that not only our posterior distribution becomes unimodal it is almost symmetrical shape. 
+
+
+```{r, fig.align='center'}
+
+curve(dgamma(x,shape=shape_post, rate=rate_post),from=0,to=15,n=3000,lwd=3,col="blue",ylab="density",main="Prior-posterior updating",cex.main=0.75, xlab=expression(theta))
+curve(dgamma(x,shape=shape_prior, rate=rate_prior),add=TRUE,lwd=3)
+
+```
+
+
+leaving a degree of uncertainty about the unknown Poisson parameter θ which is of the order of the posterior
+standard deviation
+
+$$\sqrt{Var_π(θ|y_1,,,.y_n)[θ] =}\sqrt\frac{\alpha_{posterior}}{\beta^2_{posterior}}= 0.4515016 $$
+
+
+which is also measured in terms of the length of the interval estimate 1.7624677. Now the “center” of this
+posterior distribution is higher than the prior guess of 2.33 although the prior value is still inside the interval
+estimate.
+
+
+QUESTION # 2:
+
+Bulb lifetime
+You work for Light Bulbs International. You have developed an innovative bulb, and you are interested in
+characterizing it statistically. You test 20 innovative bulbs to determine their lifetimes, and you observe the
+following data (in hours), which have been sorted from smallest to largest.
+1, 13, 27, 43, 73, 75, 154, 196, 220, 297,
+344, 610, 734, 783, 796, 845, 859, 992, 1066, 1471
+Based on your experience with light bulbs, you believe that their lifetimes Yi can be modeled using an
+exponential distribution conditionally on θ where ψ = 1/θ is the average bulb lifetime.
+1. Write the main ingredients of the Bayesian model.
+2. Choose a conjugate prior distribution π(θ) with mean equal to 0.003 and standard deviation 0.00173.
+3. Argue why with this choice you are providing only a vague prior opinion on the average lifetime of the
+bulb.
+4. Show that this setup fits into the framework of the conjugate Bayesian analysis
+5. Based on the information gathered on the 20 bulbs, what can you say about the main characteristics of
+the lifetime of yor innovative bulb? Argue that we have learnt some relevant information about the θ
+parameter and this can be converted into relevant information about 1/θ
+6. However, your boss would be interested in the probability that the average bulb lifetime 1/θ exceeds
+550 hours. What can you say about that after observing the data? Provide her with a meaningful
+Bayesian answer.
+
+
+Solution:
+
+1. Write the main ingredients of the Bayesian model:
+
+
+We have to find statistical model and prior distribution on paramter Θ. These are our main ingredient. 
+
+i. The statistical model corresponds to
+$$ L_{y_1,...,y_n(θ)} = f(y_1, ..., y_n|θ)  =\prod_{i=1}^nf(y_i|θ) =\prod_{i=1}^nθe^{-θy_i} I_{(0,∞)}(y_i) ∝ θ^ne^{−{θ\sum_{i=1}^n}y_i}$$
+
+with θ being the rate parameter of the exponential model for which the parameter space Θ is the interval
+(0, ∞).
+
+ii. The prior distribution on $ Θ = (0, ∞) $chosen within the Gamma family is a Gamma distribution with, for
+the time being, generic hyperparameter h = (s, r) with s being the shape parameter and r being the rate
+parameter
+
+$$π_h(θ) = \frac{r^s}{Γ(s)}e^{−rθ}θ^{s−1}I(0,∞)(θ)$$
+
+
+2. Choose a conjugate prior distribution π(θ) with mean equal to 0.003 and standard deviation 0.00173.
+
+   If $π_h(·)$ chosen within the Gamma family we have that $$ E_{π_{h}} =\frac{s}{r}  \\ and \\ Var_{π_{h}} =\frac{s}{r^2}$$ hence we must solve
+the following system
+
+$$E_{π_{h}} =\frac{s}{r} = 0.003 \\ 
+Var_{π_{h}} =\frac{s}{r^2}  = \frac{E_{π_{h}}} {r} = 0.001732 = 0.0000029929 $$
+
+which yeilds $$  r = \frac{0.003}{0.0000029929} = 1002.372 \\ s = 0.003 · r = 0.003 · 1002.372 = 3.007117 $$
+Hence the prior distribution we are looking for corresponds to the Gamma distribution with hyperparameter $$h = (s = 3.007117, r = 1002.372)$$
+
+
+3. Argue why with this choice you are providing only a vague prior opinion on the average
+lifetime of the bulb.
+
+Average lifetime of the bulb is the reciprocal of the θ parameter ψ =1/θ. Hence, in order to consider the vagueness of the distribution of the average lifetime we should report on the vagueness corresponding to the distribution of ψ =1/θ.The distribution of ψ =1/θ is an inverse Gamma with mean 
+
+$$ E[ψ] = \frac{r}{s−1} = \frac{1002.372}{3.007117−1} = 499.4089 $$
+$$ Var[ψ] = \frac{r^2}{(s−1)^2(s−2)} = 247646.7 $$
+
+$$\sqrt{Var[ψ]} = 497.64117 $$
+
+Concluding we have mean of 499.4089, varinace is 247646.7 and standard diviation is 497.64117. This means that the prior distribution of the average lifetime is quite vaguely dispersed around its mean. 
+
+Lets simulate it and get actual values from sumulation
+
+```{r}
+set.seed(123)
+theta_prior_sim <- rgamma(10000, shape = 3.007117, rate = 1002.372)
+psi_prior_sim <- 1/theta_prior_sim
+sd(psi_prior_sim)
+```
+```{r}
+TeachingDemos::emp.hpd(psi_prior_sim)
+```
+```{r ,fig.align='center'}
+hist(psi_prior_sim, prob=TRUE, xlim=c(0,2500), n=200, xlab=expression(psi),main="")
+title(main="Empirical distribution prior average lifetime")
+box()
+```
+Hence one can argue with some approximation that there is some relevant dispersion of the prior distribution
+around its mean which corresponds to some degree of vagueness. 
+
+4. Show that this setup fits into the framework of the conjugate Bayesian analysis
+
+
+By using baysian rule:
+
+$$ π(θ|y_1, ..., y_n)  ∝ π_h(θ) ·L_{y_1,...,y_n(θ)}  ∝ e^{−rθ}θ^{s−1}I(0,∞)(θ).θ^ne^{−{θ\sum_{i=1}^n}y_i}\\ 
+∝ e^{−(r+\sum_{i=1}^{n}y_i)θ}θ^{(s+n)−1}I(0,∞)(θ)  $$
+which indeed is, up to the appropriate normalizing constant, the Gamma density corresponding to the
+(updated) hyperparameter $h^∗ = (s^∗ = s + n, r^∗ = r + \sum_{i=1}^{n} y_i)$
+
+
+5. Based on the information gathered on the 20 bulbs, what can you say about the main
+characteristics of the lifetime of yor innovative bulb? Argue that we you have learned
+some relevant information about the θ parameter and this can be converted into relevant
+information about 1/θ
+
+```{r}
+y_obs <- c(1, 13, 27, 43, 73, 75, 154, 196, 220, 297, 344,
+610, 734, 783, 796, 845, 859, 992, 1066, 1471)
+n <- length(y_obs)
+```
+
+
+```{r}
+sum(y_obs)
+```
+
+We should look at the posterior distribution on the unknown parameter θ and the corresponding posterior
+distribution on the unknown ψ =1/θ. Again by simulating from the posterior Gamma distribution with
+$ h^∗ = (s^∗ = 3.007117 + 20 = 23.007117, r^∗ = 1002.372 + 9599 = 10601.37) $
+
+```{r}
+theta_posterior_sim <- rgamma(10000, shape = 23.007117, rate = 10601.37)
+psi_posterior_sim <- 1/theta_posterior_sim
+sd(psi_posterior_sim)
+```
+
+```{r}
+hist(psi_prior_sim, prob=TRUE, xlim=c(0,2500), n=200, xlab=expression(psi),main="")
+title(main="Empirical distribution posterior average lifetime")
+```
+
+```{r}
+cat ("Mean is:", mean(psi_posterior_sim) , fill=TRUE)
+cat ("Standard deviation is:", sd(psi_posterior_sim),   fill=TRUE)
+cat ("HPD is:", TeachingDemos::emp.hpd(psi_posterior_sim), fill=TRUE)
+
+```
+One can argue that although the posterior mean is now only slightly lower than the prior mean the whole posterior
+distribution is more concentrated around its center with a standard deviation which is reduced by a factor 1/3 and a corresponding 0.95 HPD credible interval corresponding to [299.0625, 693.7010].
+The exact computations can be done with the inverse Gamma distribution with original hyperparameter
+$ h^∗ = (s^∗ = 23.007117, r^∗ = 10601.37). $ Here we limit ourselves to plot the prior-to-posterior density comparison
+
+
+```{r ,fig.align='center'}
+curve(invgamma::dinvgamma(x,shape=23.007117,rate=10601.37),
+main="",xlab=expression(psi),
+ylab="prior or posterior density",
+from=0,to=2500,n=2000,lwd=3,col="red")
+curve(invgamma::dinvgamma(x,shape=3.007117,rate=1002.372),
+main="",xlab=expression(psi),
+n=2000,lwd=3,add=TRUE)
+title("prior-to-posterior comparison")
+legend(x="topright",col=c("black","red"),lty=1,lwd=3,
+legend=c("prior","posterior"))
+```
+6. However, your boss would be interested in the probability that the average bulb lifetime
+1/θ exceeds 550 hours. What can you say about that after observing the data? Provide
+him with a meaningful Bayesian answer.
+
+
+Using Bayesian terminology, after observing the 20 lifetimes, our
+state of uncertainty about the lifetime characteristics of the bulb is represented by the posterior distribution
+of θ or, equivalently (by reparameterization), of ψ and hence we can provide the posterior probability that the
+uncertain (random according to the posterior) average lifetime ψ exceeds 550 hours. To compute it exactly
+we can write
+
+$$Pr(ψ > 550|y_1^{obs} , ..., y_n^{obs}) = Pr_{π_{h∗}}(\frac{1}{θ}> 550)= Pr_{π_{h∗}}(θ < \frac{1}{1550} =\int_{1}^{15500} π_{h∗} (θ)dθ$$
+
+
+```{r}
+pgamma(1/550, shape = 23.007117, rate = 10601.37)
+```
+
+which corresponds approximately to the following
+```{r}
+mean(theta_posterior_sim<(1/550))
+```
+
+```{r}
+mean(psi_posterior_sim>550)
+```
+

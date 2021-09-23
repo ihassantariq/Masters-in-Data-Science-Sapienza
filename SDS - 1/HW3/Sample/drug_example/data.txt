@@ -1,0 +1,8 @@
+# Data
+# these values could alternatively have been given in model description
+list(a = 9.2,      # parameters of prior distribution
+     b = 13.8,   
+     y = 15,       # number of successes
+     m = 20,       # number of trials
+     n  = 40,      # future number of trials
+     ncrit = 25)   # critical value of future successes

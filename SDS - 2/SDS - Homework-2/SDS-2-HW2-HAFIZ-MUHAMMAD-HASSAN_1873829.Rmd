@@ -1,0 +1,644 @@
+---
+title: "Homework #02"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: null 
+  toc: yes 
+  word_document: default
+header-includes: \usepackage{graphicx}
+---
+
+<h4>Name: Hafiz Muhammad Hassan </h4>
+<h4>Matricula: 1873829 </h4>
+<h2>Question # 1 </h2>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width='500px', dpi=200)#, fig.height = 4)
+```
+
+\newpage
+
+
+1 a)  Illustrate the characteristics of the statistical model for dealing with the *Dugong*'s data. Lengths ($Y_i$)  and  ages ($x_i$) of  27 dugongs ([see cows](https://en.wikipedia.org/wiki/Dugong)) captured off the coast of Queensland have been recorded and the
+  following (non linear)  regression model is considered in [Carlin and Gelfand (1991)](http://people.ee.duke.edu/~lcarin/Gelfand91.pdf):
+\begin{eqnarray*}
+Y_i &\sim& N(\mu_i, \tau^2) \\
+\mu_i=f(x_i)&=& \alpha - \beta \gamma^{x_i}\\
+\end{eqnarray*}
+Model parameters are
+$\alpha \in (1, \infty)$,
+$\beta \in (1, \infty)$,
+$\gamma \in (0,1)$,
+$\tau^2 \in (0,\infty)$. 
+Let us consider the following prior distributions:
+\begin{eqnarray*}
+\alpha &\sim&  N(0,\sigma^2_{\alpha})\\
+\beta  &\sim&  N(0,\sigma^2_{\beta}) \\
+\gamma &\sim&  Unif(0,1)\\
+\tau^2 &\sim&  IG(a,b)) (Inverse Gamma)
+\end{eqnarray*}
+
+Solution:
+
+We are perfoming a nonconjugate Bayesian analysis that contains information about dugongs. The data here  whose length represents (which is the dependent variable) and age (which is the independent variable) and dimensions is of 27(n=27)   they are modelled with the use of a nonlinear growth curve with no inflection point and an asymptote as $X_i$ tends to infinity:
+$$Y_i \sim Normal(\mu_i,\tau) \quad \quad with \quad i=1, ..., 27$$ where $\mu_i = \mathbb{E}[Y_i|X_i=x_i] = f(x_i) = \alpha-\beta\gamma^{x_i}$
+
+The model parameters are $\alpha \in (1,\infty)$, $\beta \in (1,\infty)$, $\gamma \in (0,1)$ and $\tau^2 \in (0,\infty)$ and we consider the following prior distribution: 
+
+$$\alpha \sim N(0, \sigma^2_\alpha)$$
+$$\beta \sim N(0, \sigma^2_\beta)$$
+$$\gamma \sim Unif(0,1)$$
+$$\tau^2 \sim IG(a,b)$$
+
+We can see  relationship between the two variables below: 
+
+```{r, fig.align='center'}
+# The dependent variable represents the length of the dugongs, while the independent variable represents the age of the dugongs
+#install.packages('invgamma')
+library('invgamma')
+data = read.table(file = 'dugong-data.csv', sep = ',', header = TRUE)
+x = data$Age
+y = data$Length
+#LENGTH VS AGE 
+
+##  x is AGE(INDEPENDENT)
+#Dimension of independent variable
+length(x)
+
+## y is LENGTH(DEPENDENT)
+## Dimension of dependent variable 
+length(y)
+
+plot(x,y, xlab = "Age", ylab = "Length", main = "Non linear regression",col="blue",pch = 20, lwd = 5)
+abline(lm(y~x),col='green')
+
+```
+
+
+1 b)  Derive the corresponding likelihood function
+
+
+
+Solution:
+
+The likelihood function can be derived in the following way:
+
+$$ f(y_{1},y_{2}...y_{n} \mid \mu_{i},\sigma)=\prod_{i = 1}^{n}\frac{1}{\sqrt{2\pi\sigma^{2}}} exp \left[\frac{-1}{2\sigma^{2}}(y_{i}-\mu)^{2}\right] \\
+=\left(\frac{1}{\sqrt{2\pi\sigma^{2}}}\right)^{n}  exp\left[\frac{-1}{2\sigma^{2}}\sum_{i = 1}^{n}(y_{i}-\mu)^{2}\right] \\
+=\left(\frac{1}{\sqrt{2\pi\sigma^{2}}}\right)^{n}  exp\left[\frac{-1}{2\sigma^{2}}\sum_{i = 1}^{n}(y_{i}^{2}+\mu^{2}-2\mu y_{i})\right] \\
+=\left(\frac{1}{\sqrt{2\pi\sigma^{2}}}\right)^{n}  exp\left[\frac{-1}{2\sigma^{2}}\left(\sum_{i = 1}^{n}y_{i}^{2}+\sum_{i = 1}^{n}\mu^{2}-2\sum_{i = 1}^{n}\mu y_{i}\right)\right] \\
+=\left(\frac{1}{\sqrt{2\pi\sigma^{2}}}\right)^{n}  exp\left[\frac{-n}{2\sigma^{2}}\left(\mu^{2}-2\mu \overline{y}+\frac{1}{n}\sum_{i=1}^{n}y_{i}^{2}\right)\right] \\
+$$
+By observing this equation we can see that likelihood would also be normal distribution with 
+$$ \mu = \overline{y} \\
+\sigma^{2}=\frac{\sigma_y^2}{n}
+$$
+1 c)  Write down the expression of the joint prior distribution of the parameters at stake and illustrate your suitable choice for the hyperparameters.
+
+
+Solution:
+
+Joint prior distribution would be
+
+$\pi(\theta)= \pi(\alpha) * \pi(\beta) * \pi(\gamma)* \pi(\tau^{2})$
+where
+$$
+\pi(\alpha)= \frac{1}{\sigma_{\alpha}\sqrt{}2\pi}exp\left(\frac{-\alpha^2}{2\sigma_\alpha^2}\right) \\
+\pi(\beta)= \frac{1}{\sigma_{\beta}\sqrt{}2\pi}exp\left(\frac{-\beta^2}{2\sigma_\beta^2}\right) \\
+\pi(\gamma)=1 \\
+\pi(\tau^2)= \frac{\beta^\alpha}{\Gamma(\alpha)}*\tau^{2(\alpha-1)}*exp\left(\frac{-\beta}{\tau^2}\right) \\
+Joint Distribution=\pi(\theta)\\
+= \frac{1}{\sigma_{\alpha}\sqrt{}2\pi}exp\left(\frac{-\alpha^2}{2\sigma_\alpha^2}\right) *\frac{1}{\sigma_{\beta}\sqrt{}2\pi}exp\left(\frac{-\beta^2}{2\sigma_\beta^2}\right) *
+\frac{\beta^\alpha}{\Gamma(\alpha)}*\tau^{2(\alpha-1)}*exp\left(\frac{-\beta}{\tau^2}\right) \\
+$$
+The suitable hyperparameters would be 
+$$
+\alpha \sim N(0,10000) \\
+\beta \sim N(0,10000) \\
+\gamma \sim Unif(0,1) \\
+\tau^2 \sim I\Gamma(0.001,0.001)
+$$
+1 d)  Derive the functional form  (up to proportionality constants) of all full-conditionals
+
+Solution:
+
+Full condition of $\alpha$ <br/>
+$$
+\pi(\alpha \mid \beta,\gamma,\tau^2,x,y)=\pi(\alpha)*L(\alpha, \beta ,\gamma,\tau\mid x,y) \\
+= \frac{1}{\sigma_\alpha\sqrt{2\pi}}* exp\left(\frac{-\alpha^2}{2\sigma_\alpha^2}\right)\frac{1}{\left(\tau\sqrt(2\pi)\right)^n}*\left[\frac{-1}{2\tau^2}*\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2\right] \\
+= \frac{1}{\sigma_\alpha\sqrt{2\pi}(\tau\sqrt2\pi)^n}* exp\left[\frac{-\alpha^2}{2\sigma_\alpha^2}+\frac{-1}{2\tau^2}*\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2\right] \\
+= \frac{1}{\sigma_\alpha\sqrt{2\pi}(\tau\sqrt2\pi)^n}* exp\left[\frac{-\alpha^2}{2\sigma_\alpha^2}+\frac{-1}{2\tau^2}*\sum_{i=1}^{n}y_i^2-2y_i\alpha-2\alpha\beta\gamma^{x_i}+\alpha^2-2y_i\beta\gamma^{x_i}+\beta^2\gamma^{2x_i}\right] \\
+\sim exp\left[\frac{-\alpha^2}{2\sigma_\alpha^2}+\frac{-1}{2\tau^2}*\sum_{i=1}^{n}-2y_i\alpha-2\alpha\beta\gamma^{x_i}+\alpha^2\right] \\
+\sim exp\left[\frac{-\alpha^2}{2\sigma_\alpha^2}+\frac{-1}{2\tau^2}\sum_{i=1}^{n}\alpha^2+\frac{1}{\tau}\alpha\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})\right] \\
+\sim exp\left[\frac{-\alpha^2}{2\sigma_\alpha^2}+\frac{-n\alpha^2}{2\tau^2}+\frac{1}{\tau}\alpha\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})\right] \\
+\sim exp\left[\frac{-1}{2}(\frac{1}{\sigma_\alpha^2}+\frac{n}{\tau^2})\alpha^2+\frac{1}{\tau}\alpha\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})\right] \\
+\sim exp\left[\frac{-1}{2}\left(\frac{\tau^2+n\sigma_\alpha^2}{\tau^2\sigma_\alpha^2}\alpha^2+\frac{2}{\tau}\alpha\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})\right)\right] \\
+\pi(\alpha \mid \beta,\gamma,\tau^2,x,y) \sim N\left(\frac{\sigma_\alpha^2\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})}{\tau^2+n\sigma_\alpha^2},\frac{n\sigma_\alpha^2+\tau^2}{\tau^2\sigma_\alpha^2}\right) \\
+$$
+Full condition of $\beta$ <br/>
+$$
+\pi(\beta \mid \alpha,\gamma,\tau^2,x,y)=\pi(\beta)*L(\beta, \alpha ,\gamma,\tau\mid x,y) \\
+= \frac{1}{\sigma_\beta\sqrt{2\pi}}* exp\left(\frac{-\beta^2}{2\sigma_\beta^2}\right)\frac{1}{\left(\tau\sqrt(2\pi)\right)^n}*\left[\frac{-1}{2\tau^2}\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2\right] \\
+= \frac{1}{\sigma_\beta\sqrt{2\pi}(\tau\sqrt2\pi)^n}* exp\left[\frac{-\beta^2}{2\sigma_\beta^2}+\frac{-1}{2\tau^2}\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2\right] \\
+= \frac{1}{\sigma_\beta\sqrt{2\pi}(\tau\sqrt2\pi)^n}* exp\left[\frac{-\beta^2}{2\sigma_\beta^2}+\frac{-1}{2\tau^2}\sum_{i=1}^{n}(y_i^2-2y_i\alpha-2\alpha\beta\gamma^{x_i}+\alpha^2-2y_i\beta\gamma^{x_i}+\beta^2\gamma^{2x_i})\right] \\
+\sim exp\left[\frac{-\beta^2}{2\sigma_\beta^2}+\frac{-1}{2\tau^2}\sum_{i=1}^{n}(-2\alpha\beta\gamma^{x_i}-2y_i\beta\gamma^{x_i}+\beta^2\gamma^{2x_i})\right] \\
+\sim exp\left(\frac{-\beta^2(\tau^2-\sigma_\beta^2\sum_{i=1}^{n}\gamma^{2x_i})+2\beta(\alpha\sigma_\beta^2 \sum_{i=1}^{n}\gamma^{x_i}+\sigma_\beta^2\sum_{i=1}^{n}y_i\gamma^{x_i}}{2\sigma_\beta^2\tau^2}\right) \\
+exp\left(\frac{\tau^2+\sigma_\beta^2n}{2\sigma_\beta^2\tau^2}\beta^2+\frac{\sigma_\beta^2\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})}{\sigma_\beta^2\tau^2}\beta\right) \\
+\pi(\beta \mid \alpha,\gamma,\tau^2,x,y) \sim N\left(\frac{\sigma_\beta^2\sum_{i=1}^{n}(y_i+\beta\gamma^{x_i})}{\tau^2+n\sigma_\beta^2},\frac{\tau^2+n\sigma_\beta^2}{\sigma_\beta^2\tau^2}\right) \\
+$$
+
+Full condition of $\gamma$ <br/>
+$$
+\pi(\gamma \mid \alpha,\beta,\tau^2,x,y)=\pi(\gamma)*L(\beta, \alpha ,\gamma,\tau\mid x,y) \\
+=\frac{1}{\tau\sqrt{2\pi}}exp\left[\frac{-1}{2\tau^2}\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2\right] \\
+$$
+Full condition of $\tau$ <br/>
+$$
+\pi(\tau^2 \mid \alpha,\beta,\gamma,x,y)=\pi(\tau)*L(\beta, \alpha ,\gamma,\tau\mid x,y) \\
+=\frac{\beta^\alpha}{\Gamma(\alpha)}*\tau^{2(\alpha-1)}*exp\left(\frac{\beta}{\tau^2}\right)*\frac{1}{(\tau\sqrt{2\pi})^2}* exp\left[\frac{-1}{2\tau^2}*\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2\right] \\
+\frac{1}{\tau^{2(\alpha+1+n/2)}} exp\left[\frac{-\beta+\frac{1}{2}\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2}{\tau^2}\right] \\
+\pi(\tau^2 \mid \alpha,\beta,\gamma,x,y) \sim IG(\alpha+\frac{n}{2},\beta+\frac{1}{2}\sum_{i=1}^{n}(y_i-\alpha+\beta\gamma^{x_i})^2)
+$$
+
+1 e)  Which distribution can you recognize within standard parametric families
+so that direct simulation from full conditional can be easily implemented ?
+
+
+Solution:
+
+
+The parameters $\alpha,\beta,\tau^2$ have their own fully conditional within standard parametric families (Normal for $\alpha$ and $\beta$, and InverseGamma for $\tau^2$), so we can easily simulate from them. Instead of the parameter $\gamma$ where we don't have a standard parametric family,we have to implement the Metropolis-Hastings algorithm.
+
+
+
+
+```{r}
+library('invgamma')
+data = read.table(file = 'dugong-data.csv', sep = ',', header = TRUE)
+x = data$Age
+y = data$Length
+
+#install.packages("MCMCpack") # You might have to update R
+library(MCMCpack, quietly = TRUE, verbose = FALSE)
+
+n <- length(x) #length of the dependent and independent variable
+iter <- 10000 # Number of iteration
+alpha = rep(NA, iter)
+beta = rep(NA, iter)
+gamma = rep(NA, iter)
+tau_square = rep(NA, iter)
+
+set.seed("1873829")
+# initial states for each parameter
+alpha[1] = 1
+beta[1] = 1
+gamma[1] = 0.5
+tau_square[1] = 0.5
+
+# full conditional gamma
+full_condit_gamma = function(gamma, alpha, beta, tau_square) {
+  return(exp(-1/(2*tau_square)*sum((y-alpha+beta*gamma^x)^2)))
+}
+
+for(t in 1:iter) {
+  
+  # update alpha Markov chain
+  alpha[t+1] = rnorm(1,(iter*sum(y+beta[t]*gamma[t]^x))/(n*iter+tau_square[t]),
+  sqrt((tau_square[t]*iter)/(n*iter + tau_square[t])))
+  
+  # update beta Markov chain
+  beta[t+1] = rnorm(1,(iter*sum((alpha[t+1]-y)*gamma[t]^x)) / 
+              (iter*sum(gamma[t]^(2*x))+tau_square[t]),
+              sqrt((tau_square[t]*iter)/(iter*sum(gamma[t]^(2*x))+tau_square[t])))
+  
+  # update gamma Markov chain
+  prop = runif(1,0,1) 
+  prob = full_condit_gamma(prop, alpha[t+1], beta[t+1], tau_square[t]) /
+    full_condit_gamma(gamma[t], alpha[t+1], beta[t+1], tau_square[t]) 
+  gamma[t+1] = ifelse(runif(1,0,1)<=prob, prop, gamma[t])
+
+  # update tau square markov chain
+  tau_square[t+1] = rinvgamma(1, n/2 + 0.001, 0.001+1/2*sum((y-alpha[t+1]+beta[t+1]*(gamma[t+1]^x))^2))
+  
+}
+metro_gibbs = cbind(alpha,beta, gamma, tau_square)
+head(metro_gibbs)
+#alpha 
+#beta
+#gamma
+#tau_score
+
+```
+
+1 g) Show the 4 univariate trace-plots of the simulations of each parameter
+
+
+Solution:
+
+```{r, fig.align='center'}
+par(mfrow=c(2,2))
+plot(alpha, xlab = "iterations", col="red" , main="alpha trace plot",type="l")
+plot(beta, xlab = "iterations", col="black",main="beta trace plot",type="l")
+plot(gamma, xlab = "iterations", col="blue",  main="gamma trace plot",type="l")
+plot(tau_square, xlab = "iterations", col="green",  main="tau Square trace plot",type="l")
+```
+
+
+1 h)  Evaluate graphically the behaviour of the empirical averages 
+$\hat{I}_t$  with growing $t=1,...,T$
+
+
+Solution:
+
+
+```{r, fig.align='center'}
+
+par(mfrow=c(2,2))
+#For alpha
+hist(alpha, main= "alpha histogram", xlab = "alpha")
+abline(v=mean(alpha), col="red")
+plot(cumsum(alpha)/(1:length(alpha)) , col='red' ,  type="l",ylim = c(2, 2.8), ylab="",main="behaviour empirical average", xlab="simulations")
+abline(h=mean(alpha), col="blue")
+
+#For beta
+hist(beta, main= "Beta histogram", xlab = "beta")
+abline(v=mean(beta), col="red")
+plot(cumsum(beta)/(1:length(beta)), col='red', type="l", ylab="", main="behaviour empirical average", xlab="simulations")
+abline(h=mean(beta), col="blue")
+
+#For gamma
+hist(gamma, main= "gamma histogram", xlab = "gamma")
+abline(v=mean(gamma), col="red")
+plot(cumsum(gamma)/(1:length(gamma)), col='red', type="l", ylab="", main="behaviour empirical average", xlab="simulations")
+abline(h=mean(gamma), col="blue")
+
+#For tau square
+hist(tau_square, main= "tau square histogram", xlab = "tau square")
+abline(v=mean(tau_square), col="red")
+plot(cumsum(tau_square)/(1:length(tau_square)), col='red', type="l", ylab="",main="behaviour empirical average", xlab="simulations")
+abline(h=mean(tau_square), col="blue")
+
+```
+
+1i) Provide estimates for each parameter together with the approximation error and explain how you have evaluated such error
+  
+  
+Solution:
+  
+The approximation error can be computed in the following way:
+
+
+$$\mathbb{E}\left[(\hat{I_n}-I)^2\right] 
+= \mathbb{V}\left[\hat{I_n}\right] 
+= \frac{1}{n}\mathbb{V}\left[h(X)\right] 
+= \frac{1}{n} \left\{ \mathbb{E}_\pi[h(X)^2] - \mathbb{E}_\pi[h(X)]^2 \right \} = \frac{K}{n}$$
+
+
+
+
+Since we don't know tha value of K, we can approximate it as:
+$$\hat{K} = \hat{V}[h(X)] = \frac{1}{n}\sum_{1=1}^nh(X_i)^2-\hat{I}^2_n$$
+
+
+```{r}
+# estimates for each parameter
+alpha_estm = mean(alpha)
+beta_estm = mean(beta)
+gamma_estm = mean(gamma)
+tau_square_estm = mean(tau_square)
+rbind(alpha_estm,beta_estm,gamma_estm,tau_square_estm)
+
+# approximation error for each parameter
+appro_err_alpha = var(alpha)/length(alpha)
+appro_err_beta = var(beta)/length(beta)
+appro_err_gamma=var(gamma)/length(gamma)
+appro_err_tau_square=var(tau_square)/length(tau_square)
+rbind(appro_err_alpha,appro_err_beta,appro_err_gamma,appro_err_tau_square)
+
+```
+
+
+1 l)  Which parameter has the largest posterior uncertainty? How did you measure it?
+
+Solution:
+
+To find the parameter with the largest posterior uncertainty we use the coefficient of variation given by the relation between $\sigma$ and the absolute value of $\mu$
+
+```{r , fig.align='center'}
+# coefficient of variation for each parameter
+coeff_var_alpha=sd(alpha)/abs(alpha_estm)
+coeff_var_beta=sd(beta)/abs(beta_estm)
+coeff_var_gamma=sd(gamma)/abs(gamma_estm)
+coeff_var_tau_square=sd(tau_square)/abs(tau_square_estm)
+rbind(coeff_var_alpha,coeff_var_beta,coeff_var_gamma,coeff_var_tau_square)
+
+#The parameter with the largest posterior uncertainty is tau square:
+
+coeff_var_tau_square
+
+
+```
+1 m) Which couple of parameters has the largest correlation (in absolute value)?
+
+
+Solution:
+
+```{r, fig.align='center'}
+
+# reference https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+
+library(corrplot)
+correl = cor(metro_gibbs)
+correl
+
+
+corrplot(correl, method="number", type="lower") # ignore the corners relation that does not include the actual relation which will alaways 1.00
+
+#The couple of parameters that has the largest correlation (in absolute value) is alpha-gamma:
+
+correl[1,3]
+
+```
+
+
+1 n) Use the Markov chain to approximate the posterior predictive distribution of the length of a dugong with age of 20 years.
+
+Solution:
+
+```{r}
+predicted_age_20 = rep(NA, iter)
+for(i in 1:iter){
+  predicted_age_20[i] = rnorm(1, alpha[i] - beta[i]*gamma[i]^20, sqrt(tau_square[i]))
+}
+head(predicted_age_20, 10)
+
+#A dugong with age of 20 years has approximately length of:
+
+mean(predicted_age_20)
+
+```
+
+
+1o) Provide the prediction of a different dugong with age 30 
+
+
+Solution:
+
+Let's repeat the same process but for age=30:
+
+```{r}
+predicted_age_30=rep(NA, iter)
+for(i in 1:iter){
+  predicted_age_30[i]=rnorm(1, alpha[i] - beta[i]*gamma[i]^30, sqrt(tau_square[i]))
+}
+head(predicted_age_30, 10)
+
+
+#A dugong with age of 30 years has approximately length of:
+
+mean(predicted_age_30)
+
+```
+
+
+1p)  Which prediction is less precise?
+
+
+SOLUTION:
+
+```{r}
+precis_20=1/var(predicted_age_20)
+precis_20
+precis_30=1/var(predicted_age_30)
+precis_30
+precis_20/precis_30>1
+
+
+#From the above calculations we can infer that the prediction for dugongs of 20 year is more accurate than dugongs of 30 year.So therefore we can conclude that prdiction with age 30 is less precise.
+```
+<h2>Question # 2 </h2>
+
+Let us consider a Markov chain 
+$(X_t)_{t \geq 0}$
+defined on the state space ${\cal S}=\{1,2,3\}$
+with the following transition 
+
+
+\begin{center} 
+\includegraphics[width=6cm]{frog.pdf} 
+\end{center}
+
+2 a)  Starting at time $t=0$ in the state  $X_0=1$
+simulate the Markov chain with distribution assigned as above
+for $t=1000$ consecutive times
+
+Solution:
+
+
+Starting at time $t=0$ in the state $X_0=1$ we can simulate the Markov chain with distribution assigned as above for $t=1000$ consecutive times. 
+```{r, fig.align='center'}
+# Markov Chain simulation
+set.seed(123)
+# https://www.stat.auckland.ac.nz/~fewster/325/notes/ch8.pdf
+mcs = matrix(c(0, 1/2, 1/2, 5/8, 1/8,1/4, 2/3, 1/3, 0),nrow=3,byrow=T) # transition matrix
+mcs
+
+states=c(1,2,3)
+x_0=1
+
+nsamp=1000
+# vector that will hold all the simulates values starting 
+# value x_0 assigned to chain[1]
+chain=rep(NA,nsamp+1) 
+chain[1]=x_0 
+for(t in 1:nsamp){
+  chain[t+1]=sample(states,size=1,prob=mcs[chain[t],])
+}
+
+#Table
+plot(chain, col=c("red", "green", "blue", "orange"))
+table(chain)
+```
+
+
+2 b)  compute the empirical relative frequency of the two states in your simulation
+
+
+Solution:
+
+
+```{r, fig.align='center'}
+MC_simu_1=table(chain)/nsamp
+MC_simu_1
+barplot(MC_simu_1, main="relative frequencies of Monte Carlo simulations 1",
+        names.arg=c("state 1", "state 2", "state 3"), col = c("red","green","blue"))
+```
+
+
+2 c)  Repeat the simulation for 500 times and record only  the final state at time $t=1000$ for each of the  500 simulated chains. Compute the relative frequency of the 500 final states. What distribution are you approximating in this way?  Try to formalize the difference between this point and the previous
+point.
+
+Solution:
+
+
+```{r, fig.align='center'}
+
+n=500
+n_chain=rep(NA, n)
+for (i in 1:n){
+  nsamp=1000
+  chain=rep(NA,nsamp+1) 
+  chain[1]=x_0
+  for(t in 1:nsamp){
+    chain[t+1]=sample(states,size=1,prob=mcs[chain[t],])
+  }
+  n_chain[i]=tail(chain,1)
+}
+
+plot(n_chain, col=c("red", "green", "blue", "orange"))
+table(n_chain)
+
+MC_simu_2=table(n_chain)/n
+MC_simu_2
+
+barplot(MC_simu_2, main="relative frequencies of MC simulation 2",
+        names.arg=c("state 1", "state 2", "state 3"), col =  c("red","green","blue"))
+rbind(MC_simu_1,MC_simu_2)
+
+counts=rbind(MC_simu_1, MC_simu_2)
+barplot(counts, main="comparison between MC simulations", col=c("red","blue"),
+        names.arg=c("state 1", "state 2", "state 3"),
+        legend = c("MC simulation 1","MC simulation 2"), 
+        beside=TRUE, ylim=c(0,0.5), args.legend=c(bty="n"))
+
+```
+
+When we repeat the simulation for 500 times and record only the final state at time $t=1000$ for each  500 simulated chains, we are considering part of Markov Chain, because a sample $X_t$ is not dependent on the state $X_{t-1}$. In theory the correct distribution from which we are sampling is:
+$$P_{x_0}(X_t \in A)=K^t(x_0,A)=\int_S K(y,A)K^{t-1}(x_0,dy)$$
+
+
+But it is important  that for an *ergodic Markov chain the probability of the three states converge to the stationary distribution $\pi$. So taking the distribution of the 1000th states of multiple chains could still be a good approximation of the stationary distribution.
+
+If we want to formalize the difference between ergodic Markov chain and the partial Markov Chain(which is not as a whole), we can say that in the previous case  we consider iterations from 0 to 1000 and in ergodic Markov chain, we consider only the last iteration.
+
+*a state $i$ is ergodic if it is recurrent, has a period of 1, and has finite mean recurrence time. If all states in an irreducible Markov chain are ergodic, then the chain is said to be ergodic.
+
+
+
+2 d) Compute the theoretical stationary distribution $\pi$ and explain how you have obtained it
+
+
+Solution:
+
+
+We can compute the stationary distribution by multiplying the transition matrix by itself over and over again until it finally converges or solving the system or using the eigenvalues.
+
+The stationary distribution $\pi=(\pi_1,\pi_2,\pi_3)^T$ must satisfy the equations
+
+$$
+\begin{cases}
+\pi_1 p_{11}  + \pi_2 p_{21} + \pi_3 p_{31}= \pi_1 \\
+\pi_1 p_{12}  + \pi_2 p_{22} + \pi_2 p_{32}= \pi_2 \\
+\pi_1 p_{13}  + \pi_2 p_{23} + \pi_2 p_{33}= \pi_3 
+\end{cases}
+$$
+which can be re-written in matrix notation as:
+$$
+(P^T-\lambda I) \pi = 0 
+$$
+corresponding to $\lambda=1$ or, equivalently, $\pi$ must be in the eigenspace corresponding to the eigenvalue $\lambda=1$. However, there are infinite possible such solutions. The only one we are interested in is the solution $\pi$ such that $\pi_1+\pi_2+\pi_3=1$.
+The stationary distribution $\pi$ can be obtained in several ways(here I have dicussed 3 methods)
+
+```{r, fig.align='center'}
+# first method
+pi=solve(matrix(c(-1, 5/8, 2/3, 1/2, 1/8-1, 1/3, 1, 1, 1), nrow=3, byrow = T), c(0,0,1))
+pi
+
+# second method
+mcs_alt = mcs
+for(i in 1:100)
+  mcs_alt = mcs_alt %*% mcs
+mcs_alt
+
+
+# confirm that pi*transition matrix = pi
+pi%*%mcs_alt
+
+# third method
+eigen(t(mcs))
+eigen(t(mcs))$vector[,1]
+pi=eigen(t(mcs))$vector[,1]/sum(eigen(t(mcs))$vector[,1])
+pi
+
+
+
+# confirm that pi*transition matrix = pi
+pi%*%mcs
+
+```
+
+
+
+2 e) Is it well approximated by the simulated empirical relative frequencies computed in (b) and (c)?
+
+
+SOLUTION:
+
+The $\pi$ distribution is well approximated by simulated empirical relative frequencies both in the Markov chain in point (b) and in point (c).
+
+We can see that the difference between $\pi$ and the empirical relative frequencies are almost insignificant
+
+
+```{r, fig.align='center'}
+barplot(pi, main="stationary distribution",names.arg=c("state 1", "state 2", "state 3"), col="green")
+
+counts=rbind(MC_simu_1, MC_simu_2, pi)
+barplot(counts, main="comparison between MC simulations and stationary distribution", 
+        names.arg=c("state 1", "state 2", "state 3"), ylim=c(0,0.5),
+        legend = c("MC simulation 1","MC simulation 2","stationary distribution"), 
+        beside=TRUE, args.legend=c(bty="n"), col=c("red","blue","green"))
+
+first_diff=pi-MC_simu_1
+first_diff
+second_diff=pi-MC_simu_2
+second_diff
+
+```
+
+
+2 f)  what happens if we start at $t=0$ from state $X_0=2$ instead of  $X_0=1$?
+
+SOLUTION:
+
+
+The ergodic properties of MC will ensure that there will be no difference starting from any  state, so we don't take into account whether it starts at $t=0$ from state $X_0=2$ instead of $X_0=1$ or vice versa.
+
+```{r, fig.align='center'}
+
+x_0<-2
+
+nsamp<-1000
+chain<-rep(NA,nsamp+1) 
+chain[1]<-x_0 
+for(t in 1:nsamp){
+  chain[t+1]<-sample(states,size=1,prob=mcs[chain[t],])
+}
+
+plot(chain,ylim=c(0,4), col=c("red", "green", "blue", "orange") )
+
+table(chain)
+
+MC_simu_3<-table(chain)/nsamp
+MC_simu_3
+
+barplot(MC_simu_3, main="relative frequencies of MC simulation 3",
+        names.arg=c("state 1", "state 2", "state 3"),col=c("red", "blue","green"))
+
+counts=rbind(MC_simu_1, MC_simu_3)
+barplot(counts, main="comparison between MC simulations at different starting point X_0",
+        col=c("brown","green"), names.arg=c("state 1", "state 2", "state 3"),
+        legend = c("MC simulation 1 - X_0=1","MC simulation 3 - X_0=2"), 
+        beside=TRUE, ylim=c(0,0.5), args.legend=c(bty="n"))
+```
+

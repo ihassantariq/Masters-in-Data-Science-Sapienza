@@ -1,0 +1,2 @@
+"0","d <- density(data_set) # returns the density data "
+"0","plot(d, main=""Density of Stellar Masses"") # plots the results"

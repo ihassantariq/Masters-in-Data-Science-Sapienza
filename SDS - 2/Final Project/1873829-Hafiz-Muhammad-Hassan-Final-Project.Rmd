@@ -1,0 +1,485 @@
+---
+title: Final Project SDS - 2 - Fully Bayesian Analysis
+output: html_document
+---
+
+<h4>Name: Hafiz Muhammad Hassan </h4>
+<h4>Matricula: 1873829 </h4>
+<b/><b/>
+
+<h2>1. Illustration of the dataset:</h2>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width='500px', dpi=200)#, fig.height = 4)
+```
+
+<h4>Dataset Download from: https://raw.githubusercontent.com/GTPB/PSLS20/master/data/fev.txt </h4>
+
+In this dataset, we have  FEV of 606 children, between the ages of 6 and 17, were measured. The dataset also provides additional information on these children: their age, their height, their gender and, most importantly, whether the child is a smoker or a non-smoker.
+
+<h4>Features:</h4>
+
+*age:* This feature is the age of the person in numeric digits.</br>
+*height:* It is the height of the patient in inches.</br>
+*gender:* Male or Female represented as 'm' and 'f' respectively </br>
+*smoking:* Whether person/child smokes or not in 0 and 1's.</br>
+*fev:* The fev, which is an acronym for forced expiratory volume, is a measure of how much air a person can exhale (in litres) during a forced breath.This is the actual feature we will create model for.</br>
+
+Before loading the dataset I will load all the libraries.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+require(tidyverse)
+require(magrittr)
+require(R2jags)
+require(mcmcse)
+require(bayesplot)
+require(TeachingDemos)
+```
+
+Reading the dataset in *FEVdata* object.
+ 
+```{r}
+FEVdata <- read.table(file="fev.txt",header=T, sep="\t")
+head(FEVdata)
+```
+
+
+Before doing anything lets just convert gender to 0 or 1's. 0 repersents male and 1 represent female
+
+```{r}
+FEVdata$gender = ifelse(FEVdata$gender=="m", 1, 0) # keep in mind we are replacing the original gender from character to 0 and 1s
+```
+
+
+<h4>Analyzing Dataset </h4>
+
+Plotting between *age* and *fev*:
+```{r, fig.align='center'}
+plot(x=FEVdata$age,y=FEVdata$fev,xlab = "Age",ylab = "FEV", col= c("darkgreen"))
+```
+
+We realized that *fev* increases linearly with the *age*.
+
+Plotting between *height* and *fev*:
+
+```{r, fig.align='center'}
+plot(x=FEVdata$height,y=FEVdata$fev,xlab = "Height",ylab = "FEV", col= c("darkblue"))
+```
+We realized that *fev* increases linearly with the *height*.
+
+
+Plotting between *gender* and *fev*:
+
+```{r, fig.align='center'}
+plot(x=FEVdata$gender,y=FEVdata$fev,xlab = "Female - Male",ylab = "FEV", col= c("darkgreen"))
+```
+We realized that male generally have more *fev* than female.
+
+
+Plotting between *smoking* and *fev*
+```{r, fig.align='center'}
+plot(x=FEVdata$smoking,y=FEVdata$fev,xlab = " Non-Smoking - Smoking",ylab = "FEV", col= c("darkblue"))
+
+```
+From above plot we didn't get anything for now. Lets see we can conclude something here or not. 
+
+```{r}
+si = 0
+ni = 0
+smokers = 0
+non_smokers = 0 
+n = length(FEVdata$smoking)
+for(i in 1:n) {
+  
+  if(FEVdata$smoking[i] == 1)
+  {
+    smokers[si] = FEVdata$fev[i]
+    si = si + 1
+  }
+  else
+  {
+     non_smokers[ni] = FEVdata$fev[i]
+      ni = ni + 1
+  }
+}
+mean_of_smoker = mean( smokers)
+mean_of_nonsmoker = mean(non_smokers)
+
+cat("Mean of Smoker:",mean_of_smoker,fill = TRUE)
+cat("Mean of non-Smoker:", mean_of_nonsmoker)
+
+```
+
+We can see after calculating the mean that mean of smoker is higher than mean of non-smoker. It means that smoker has higher tendency of having higher *fev*
+
+Now we plot the distribution of *fev*
+```{r, fig.align='center'}
+hist(FEVdata$fev,breaks = 50,xlab = "FEV Distribution")
+
+```
+we can see from above that most children's *fev* stays between 2-3. 
+
+<h4>2. Explain the overall features of the statistical model such as the role of the parameters and the inferential
+goals of the analysis</h4>
+
+We observe that *fev* follows normal distribution so we try to develop its distribution. 
+
+We will create a model in *jags* and analyze it. Lets only include Age and Smoke features and analyze them.
+
+$$y \sim N(\mu,\tau) \\
+\mu= \beta_1 + \beta_2(Age)+\beta_3(Smoke) \\
+Prior\ Distribution \ of \  parameters \\
+\beta_1 \sim N(0,0.001) \\
+\beta_2 \sim N(0,0.001) \\
+\beta_3 \sim N(0,0.001) \\
+\tau \sim G(0.001,0.001)$$
+
+```{r}
+
+model1.jags <- function() {
+  # Likelihood
+  for(i in 1:n){
+    fev[i] ~ dnorm(mu[i],tau)
+    mu[i] <- beta[1] + beta[2]*age[i] + beta[3]*smoke[i]
+  }
+  beta[1] ~ dnorm(0,0.001)  # Diffuse prior
+  beta[2] ~ dnorm(0,0.001)
+  beta[3] ~ dnorm(0,0.001)
+  tau ~ dgamma(0.001,0.001) #gamma here is important
+}
+```
+
+The Parameter $\tau$ represents the variation in the data of *fev*. 
+The Parameter $\beta_1$ is linear transformation parameter used to balance out the mean of data.
+The Parameter $\beta_2$ gives the weight to age variable, the larger this parameter means *fev* depends more on value to age.
+The Parameter $\beta_3$ gives the weight to Smoke variable, the larger this parameter means FEV depends more on value to smoke.
+
+From above we have the Distribution of the FEV and prior distribution we can run MCMC on the data and evaluate the parameters
+For initial point in Markov chain we set All $\beta=0$ and $\tau=1$ and we run 9000  thousands MCMC itrations with 3 chains
+
+Lets prepare data for jags
+
+```{r}
+# Preparing data for JAGS
+n <- length(FEVdata$age)
+
+fev <- FEVdata$fev
+smoke <- FEVdata$smoking
+age <- FEVdata$age
+
+#Lets only include Age and Smoke features and analyze them
+dat.jags <- list("n","fev","smoke", "age")
+
+
+# Defining parameters of interest
+mod.params <- c("beta","tau") 
+
+# Starting values
+mod.inits <- function(){
+  list("tau" = 1, "beta" = c(0,0,0))
+}
+
+```
+
+```{r}
+# Run JAGS
+set.seed(1873829) # adding my matricula
+mod1.fit <- jags(data = dat.jags,                                        # DATA
+                model.file = model1.jags, inits = mod.inits,                  # MODEL
+                parameters.to.save = mod.params,                  
+                n.chains = 3, n.iter = 9000, n.burnin = 1000, n.thin=10)# MCMC
+mod1.fit
+chainArray <- mod1.fit$BUGSoutput$sims.array
+
+```
+
+<h4>3.illustrate the main inferential findings (Bayesian point and interval estimation, hypothesis testing) </h4>
+
+From above we get the beta-1 as 0.208, beta-2 value as 0.248, beta_3 as -0.236 and tau value as 1034.3. pD is 4.3 panalization value and DIC measure of goodness of fit throughtout different chains which has 1034.3. 
+
+lets get the  estimates bayesian point and interval estimation of our model.
+
+```{r}
+chainMat <- mod1.fit$BUGSoutput$sims.matrix
+# Intervals
+cred <- 0.95
+
+cat("Here are pont estimates or means of different parameters:", fill = TRUE)
+# Point estimates
+(par.hat.jags <- colMeans(chainMat))
+
+cat("", fill = TRUE)
+
+cat("Here are equal tail intervals of our parameters we estimated:", fill = TRUE)
+
+# Intervals
+(par.ET.jags <- apply(chainMat, 2, quantile, 
+                    prob=c((1-cred)/2, 1-(1-cred)/2)))
+cat("", fill = TRUE)
+cat("Here are HPD intervals using coda of our model:", fill = TRUE)
+
+# What about the HPD?
+(par.HPD.jags <- coda::HPDinterval(as.mcmc(chainMat)))
+
+```
+
+
+<h4>4.Illustration of the features of the MCMC convergence diagnostics and error control.</h4>
+
+Lets do some dignostics using BayesPlot.
+
+```{r, fig.align='center'}
+# Plots with BayesPlot
+chainArray <- mod1.fit$BUGSoutput$sims.array
+bayesplot::mcmc_combo(chainArray) # combo of density plot 
+```
+We can see from bayesplot above that chains values of each parameters. It seems like our model is converged because different chains are exploring the same kind of area. 
+
+
+```{r, fig.align='center'}
+bayesplot::mcmc_acf(chainArray)
+```
+From above we see that our model is started from 1 and went quickly towards 0 or near zero for each parameters in chain. 
+
+Lets use coda now because it will provide us with geweke, gelmen and heidel diagnostics
+
+```{r }
+coda.fit <- coda::as.mcmc(mod1.fit)
+coda::geweke.diag(coda.fit) # 
+```
+
+Geweke basically comparing mean of 1st 10% of chain to mean of last 50% of the chain if they are both kind of equal we surely converged. Lets plot it here:
+```{r, fig.align='center'}
+coda::geweke.plot(coda.fit)
+```
+```{r,fig.align='center'}
+coda::gelman.diag(coda.fit)
+coda::gelman.plot(coda.fit)
+```
+This is the potential scale reduction factor that I want to be near 1 or maybe under is better at the same time. The plots suggest to have the median (black line) under the 97.5% of quantile (red line).
+
+lets now run the heidel diagnostic to anaylze that.
+```{r, fig.align='center'}
+coda::heidel.diag(coda.fit)
+```
+
+Heidel check the model in two steps first it check whether chain is stationary. From above we can see that chain seems to passed all stationary test. The second part basically checks that whether accuracy is good enough comparing it to the half width of chain. 
+
+<h4>5. discuss one possible alternative statistical model and illustrate results of model comparison through DIC
+and/or marginal likelihood (see also Chapter 11 in Ntzoufras (2010))</h4>
+
+lets create another model with slight modification and compare its DIC to one we have already created. 
+
+$$y \sim N(\mu,\tau) \\
+\mu= \beta_1 + \beta_2(Age)+\beta_3(Smoke)+\beta_4(Age)(Smoke) \\
+Prior\ Distribution \ of \  parameters \\
+\beta_1 \sim N(0,0.001) \\
+\beta_2 \sim N(0,0.001) \\
+\beta_3 \sim N(0,0.001) \\
+\beta_4 \sim N(0,0.001) \\
+\tau \sim G(0.001,0.001)$$
+
+In this model, the Parameter $\beta_4$ gives the weight to product of *smoke* and *age* variables, the larger this parameters means *fev* depends more on product of Smoke and Age</h4>
+
+Here is model in jags:
+
+```{r}
+model2.jags <- function() {
+  # Likelihood
+  for(i in 1:n){
+    fev[i] ~ dnorm(mu[i],tau)
+    mu[i] <- beta[1] + beta[2]*age[i] + beta[3]*smoke[i] + beta[4]*age[i]*smoke[i]
+  }
+  beta[1] ~ dnorm(0,0.001)  # Diffuse prior
+  beta[2] ~ dnorm(0,0.001)
+  beta[3] ~ dnorm(0,0.001)
+  beta[4] ~ dnorm(0,0.001)
+  tau ~ dgamma(0.001,0.001)
+}
+```
+
+Lets run the model with same data we have already prepared in model 1. 
+
+```{r}
+# here we have to initialize the model beta_4 value equal to zero as well. 
+mod2.inits <- function(){
+  list("tau" = 1, "beta" = c(0,0,0,0))
+}
+set.seed(1873829)
+mod2.fit <- jags(data = dat.jags,                                        # DATA
+                model.file = model2.jags, inits = mod2.inits,                  # MODEL
+                parameters.to.save = mod.params,                  
+                n.chains = 3, n.iter = 9000, n.burnin = 1000, n.thin=10)# MCMC
+mod2.fit
+chainArray <- mod2.fit$BUGSoutput$sims.array
+
+```
+
+Through our DIC comparison we can see that DIC value of second model is slighly descreased it means that second model is better than the first model. I will not going to perform diagnostics in this model because intended parameters values will be just slighly changed. 
+
+<h4>6. check the ability of a fully Bayesian analysis to recover model parameters with data simulated from the
+model</h4>
+
+Lets create a simulated data for our model estimates above to check how it is working so that we know that there is nothing wrong in the model itself as diagnostic check.  
+
+```{r}
+N = 606 # sample size 
+
+set.seed(1873829)
+# Simulate the tries size
+sim.smoke <- sample(c(0,1), replace=TRUE, size=N) # creating smoke 
+
+# Simulate the covariate (as you prefer)
+sim.age <- sample(6:17, replace=TRUE, size=N)
+
+beta = c(0.064,0.262 ,2.259,-0.193)
+tau = 0.186 # standard diviation of tau
+# Pick fixed values for the parameters of the model got from above model
+sim.fev = 0
+sim.mus = 0
+for(i in 1:n){
+    sim.mus[i] <- beta[1] + beta[2]* sim.age[i] + beta[3]*sim.smoke[i]+ beta[4]*sim.age[i]*sim.smoke[i]
+}
+  
+#Simulate response according to the model
+sim.fev = rnorm(N, sim.mus, tau )  #predicting values based on our previous model. 
+
+sim.dat <- data.frame(age=sim.age, smoking= sim.smoke, fev=sim.fev)
+head(sim.dat)
+
+```
+
+Same model there is a change of *sim.model.jags*.
+```{r}
+sim.model.jags <- function()  {
+  # Likelihood
+  for(i in 1:n){
+    fev[i] ~ dnorm(mu[i],tau)
+    mu[i] <- beta[1] + beta[2]* age[i] + beta[3]*smoke[i]+ beta[4]*age[i]*smoke[i]
+  }
+  
+  beta[1] ~ dnorm(0, 0.001)  # Diffuse prior
+  beta[2] ~ dnorm(0, 0.001)
+  beta[3] ~ dnorm(0, 0.001)
+  beta[4] ~ dnorm(0, 0.001)
+  tau ~ dgamma(0.001, 0.001)
+}
+```
+
+
+Lets initialize the simulated model and run it. 
+
+```{r}
+# data that jags will use
+sim.dat.jags <- list(n=N,fev=sim.fev,age=sim.age,smoke=sim.age)
+
+# parameters of intrests
+sim.mod.params  <- c("beta","tau") 
+
+# Starting values
+sim.mod.inits <- function(){
+  list("tau" = 1, "beta" = c(0,0,0,0))
+}
+
+```
+
+```{r}
+set.seed(1873829)
+
+sim.mod.fit <- jags(data = sim.dat.jags,                                        # DATA
+                model.file = sim.model.jags, inits = sim.mod.inits,                  # MODEL
+                parameters.to.save = sim.mod.params,                  
+                n.chains = 3, n.iter = 9000, n.burnin = 1000, n.thin=10) # MCMC
+sim.mod.fit 
+```
+
+It seems like from above that DIC value descreased quite a bit also model was able to get the interested parameter. It is performing exceptionally welll on simulated data that model requires per its implementation. 
+
+Just to be sure lets perform coda heidel test
+
+```{r, fig.align='center'}
+coda.fit <- coda::as.mcmc(sim.mod.fit)
+coda::heidel.diag(coda.fit)
+```
+
+Only halfwidth Mean test is failing. Lets to be sure we will perform one other diagnostic test. 
+
+```{r, fig.align='center'}
+coda::gelman.diag(coda.fit)
+coda::gelman.plot(coda.fit)
+```
+After performing the analysis we can say that our model was able to get the model parameters correctly based on simulated data. 
+
+<h4> 7. Comparative analysis with frequentist inference </h4>
+
+We will create a linear model from the data and try to fit the parameters. Linear regressin is good choice for frequentistic approach. For this analysis we will get only two features *age* and *smoke* and do the same analysis we used in baysian. 
+
+```{r}
+smoke<-FEVdata$smoking
+fev<- FEVdata$fev
+age<- FEVdata$age
+n <- length(fev)
+lr <- lm(fev~age+smoke+age:smoke) # linear regression
+
+# should display summary of the model 
+summary(lr)
+
+
+beta <- coef(lr)
+X <- cbind(rep(1,n),age,smoke,age*smoke)
+
+# building getting data from model itself
+rstudsmoke <- rstudent(lr)[smoke==1]
+rstudnonsmoke <- rstudent(lr)[smoke==0]
+
+```
+We can observer that we get  estimates of the parameters. Now we analyze our linear line with the dataset from which the model is generated. 
+Fitted is a generic function which extracts fitted values from objects returned by modeling functions. Residuals extracts model residuals from objects returned by modeling functions.
+```{r, fig.align='center'}
+par(mfrow=c(2,2))
+plot(fitted(lr),resid(lr),xlab="Fitted Values", ylab="Residuals",main="", )
+lines(lowess(fitted(lr),resid(lr)),col= c("red"))
+qqnorm(resid(lr),main="")
+qqline(resid(lr), col=c("red"))
+
+```
+Now we analyze our linear line with the dataset for smokers only
+```{r, fig.align='center'}
+par(mfrow=c(2,2))
+plot(fitted(lr)[smoke==1],rstudsmoke,xlab="Fitted Values", ylab="Studentized Residuals",main="Smokers \n Residual Plot")
+lines(lowess(fitted(lr)[smoke==1],rstudsmoke), col= c("red"))
+qqnorm(rstudsmoke,main="Smokers \n Normal Plot")
+qqline(rstudsmoke,col= c("red"))
+
+```
+Now we analyize our linear line with the dataset for non-smokers only
+```{r, fig.align='center'}
+par(mfrow=c(2,2))
+plot(fitted(lr)[smoke==0],rstudnonsmoke,xlab="Fitted Values", ylab="Studentized Residuals",main="Nonsmokers \n Residual Plot")
+lines(lowess(fitted(lr)[smoke==0],rstudnonsmoke), col= c("red"))
+qqnorm(rstudnonsmoke,main="Nonsmokers \n Normal Plot")
+qqline(rstudnonsmoke,col= c("red"))
+```
+Now we analyize our linear line with the dataset Age wise.
+```{r, fig.align='center'}
+plot(age, rstudent(lr),xlab="Age", ylab="Residuals",main="")
+lines(lowess(age,rstudent(lr)), col= c("red"))
+
+```
+
+Finally we are going to analyze our frequentistic model with model 2(More Accurate) which has less DIC value. 
+
+```{r}
+summary(lr)
+```
+
+
+
+```{r}
+mod2.fit
+```
+
+We see that both models have given the output parameters and parameters in frequentist models are almost equal to mean of distribution of parameters in Baysean model.
+In baysean model we have fev as Normal distribution with variance as τ so baysian model also generates the variance of the fev in comparison to exact parameters in frequentist approach.
+
+

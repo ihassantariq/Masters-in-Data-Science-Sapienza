@@ -1,0 +1,122 @@
+---
+title: "Question_02_V2"
+output: html_document
+---
+<h3>Student Names: Hafiz Muhammad Hassan</br> </h3>
+<h3>Matricula: 1873829 </h3>
+
+<h5>Question# 2</h5>
+<h6>2). </h6>
+
+Answer 1:
+
+Clearly, from the question we know that Monty does not know where the price is so he cannot manipulate the game scenerio. His interference is going to get neglected. From the question we also know that Door 3 gets opened because of earthquack which leaves us with door 1 and 2. Now unfortunately, this becomes simple by using the simple probability function we know that 
+
+P(D1)=P(D1)=1/2 assuming that door 3 just vanished P(D=3|H1)=0
+
+I want to stick to this answer and lets do the simulation where adding more conditions to this problem. 
+
+Before starting the simulation I wanted to point out something the solution as we see in the slides is based on the idea that Monty know where the price is:
+
+Then whole webpage of <a href="http://marilynvossavant.com/game-show-problem/">Marilyn Vos Sovant</a> is dedicated to this.
+
+But in our case we know that we cannot assume that. As it is specifically discussed in problem. 
+
+Lets do some simulation and assume that:
+
+1. Monty does not know behind which door the prize is. 
+2. The earthquack can open door which does not have prize. 
+3. Contestent is sticking to his first choice. 
+
+```{r}
+win_count = as.integer(0) 
+lost_count = as.integer(0) 
+
+for (i in 1:1000) {
+  doors <- c(1,2,3)
+  contestant_choice <- sample( doors, 1)
+  
+  earthquack_opened_door <- sample(doors, 1)
+  prize_behind_door <- sample(doors, 1)
+  
+  #getting the value which is not equal to contestant choice
+  while (identical(contestant_choice, earthquack_opened_door)) {
+    earthquack_opened_door<- sample(doors, 1)
+  }
+  
+  #getting the value which is not equal to earthquack door
+  while (identical(prize_behind_door, earthquack_opened_door)) {
+    prize_behind_door<- sample(doors, 1)
+  }
+  
+  contestant_choice_string <- paste("Contestant Choice: ", contestant_choice)
+  earthquack_opened_door_string <- paste("Earthquack opened: ", earthquack_opened_door)
+  prize_behind_door_string <- paste("Prize behind the door: ", prize_behind_door)
+  
+  if(identical(prize_behind_door,contestant_choice)){
+    win_count <- win_count + 1 
+  }else{
+     lost_count <- lost_count + 1 
+  }
+}
+print (paste( paste("Lost:",lost_count),paste("Win:",win_count)," "))
+print (paste("Probablity of one game for wining the prize: ", win_count/1000))
+print (paste("Probablity of one game for losing the price is : ", lost_count/1000))
+```
+
+Lets switch back to condition where contenstant will always change his choice
+
+1. Monty does not know behind which door the prize is. 
+2. The earthquack can open door which does not have price. 
+3. Contestent is switching to his first choice. 
+
+
+```{r}
+win_count = as.integer(0) 
+lost_count = as.integer(0) 
+
+for (i in 1:1000) {
+  doors <- c(1,2,3)
+  contestant_choice <- sample( doors, 1)
+  
+  earthquack_opened_door <- sample(doors, 1)
+  prize_behind_door <- sample(doors, 1)
+  
+  #getting the value which is not equal to contestant choice
+  while (identical(contestant_choice, earthquack_opened_door)) {
+    earthquack_opened_door<- sample(doors, 1)
+  }
+  
+  #getting the value which is not equal to earthquack door
+  while (identical(prize_behind_door, earthquack_opened_door)) {
+    prize_behind_door<- sample(doors, 1)
+  }
+  
+ contestant_second_choice <-  contestant_choice
+   #Swithing contestant choice
+  while (identical(contestant_second_choice, contestant_choice) || identical(contestant_second_choice, earthquack_opened_door)) {
+    contestant_second_choice<- sample(doors, 1)
+  }
+  
+  
+  contestant_choice_string <- paste("Contestant first choice: ", contestant_choice)
+  contestant_choice_string <- paste("Contestant second choice: ", contestant_second_choice)
+  earthquack_opened_door_string <- paste("Earthquack opened: ", earthquack_opened_door)
+  prize_behind_door_string <- paste("Prize behind the door: ", prize_behind_door)
+  
+  if(identical(prize_behind_door,contestant_second_choice)){
+    win_count <- win_count + 1 
+  }else{
+     lost_count <- lost_count + 1 
+  }
+}
+print (paste( paste("Lost:",lost_count),paste("Win:",win_count)," "))
+print (paste("Probablity of one game for wining the prize: ", win_count/1000))
+print (paste("Probablity of one game for losing the price is : ", lost_count/1000))
+```
+
+<h5>From above experiment we can conclude that in both cases probability remains the same which is nearly equal to 1/2 if we run the simulation lets say 10000 and 100000 times it is going to get near to 1/2. I hope I answered the question <b>clearly</b> </h5>
+
+<h4> Ciao </h4>
+
+

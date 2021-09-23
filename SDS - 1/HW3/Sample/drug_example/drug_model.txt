@@ -1,0 +1,7 @@
+model;
+{
+   theta ~ dbeta(a,b)
+   y ~ dbin(theta, m)
+   P.crit <- step(y.pred - ncrit +  0.5)
+   y.pred ~ dbin(theta,n)I(P.crit,)
+}

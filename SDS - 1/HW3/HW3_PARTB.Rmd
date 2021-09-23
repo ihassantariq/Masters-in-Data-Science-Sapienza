@@ -1,0 +1,188 @@
+---
+title: "Homework 3, Part B"
+output: html_document
+---
+<style>
+h4 {
+color: #336;
+}
+p{
+color: black;
+}
+</style>
+
+<h4>0. Explore the dataset with some standard plot (e.g. histogram, density plot, boxplot, etc) and summary statistics (location,
+variability, skewness and kurtosis). Briefly comment on the shape of the mass distribution.</h4>
+
+<p>
+At first, I am going to add all the required libraries.
+</p>
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+require(rjags) # required for using JAGs in R
+require(psych) # required for getting more information from the data using describe function
+```
+
+<p>
+Then I have to load the csv file. After that I have to plot the Histogram.
+</p>
+
+```{r echo=TRUE, warning=FALSE}
+data_set = read.csv("NGC6611.csv",header = FALSE) # loading csv file
+data_set = data_set[-1,] # removing first row called "Mass"
+data_set = as.numeric(as.character(data_set)) # converting float values back to floats. 
+h <-hist(data_set, 
+     main="Histogram for Stellar Mass", 
+     xlab="", 
+     border="black", 
+     freq = FALSE,
+     plot = TRUE,
+     col="green")
+```
+<p>
+Plotting with density function 
+</p>
+
+```{r echo=TRUE, warning=FALSE}
+d <- density(data_set) # returns the density data 
+plot(d, main="Density of Stellar Masses") # plots the results
+polygon(d, col="red", border="blue")
+```
+
+<p>
+After plotting the histogram and density of stellar masses I came to conclusion that it is non-symetric left skewed curve. The mean of the density is going to be left of the median. Now moving back to displaying its summary.  
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+describe(data_set)
+```
+<h4>
+03. Now repeat the analysis in JAGS_within_R writing down explicitly the model in the BUGS language (it should not be
+difficult, just a few lines). Conclude by overlaying to the basic histogram/density plot the “best” Bayesian counterpart(s)
+of your choice.
+</h4>
+
+<p>
+Coming back to JAGS part after OpenBUGS part. Converting the same doodle model into descriptive model. For this I am going to use "rjags" package for it. JAGS is a program that accepts a model string written in an R-like syntax and that compiles and generate MCMC samples from this model using Gibbs sampling. Here is the model which I am able to deduce from option  in OpenBUGS.     
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+# The model specification
+model_string <- "model{
+	for( i in 1 : L ) {
+		y[i] ~ dlnorm(mu, tau)
+	}
+	mu ~ dnorm(a, b)
+	sigma ~ dgamma(beta, alpha)
+	tau <- pow(sigma,  -2)
+}"
+```
+
+<p>
+Now I am going to outline the data which model is going to use. 
+</p>
+```{r echo=FALSE, warning=FALSE}
+data_list= list(
+L = 208,
+a = 0,
+b = 0.000001,
+alpha = 1, # it is written somewhere that it is good value for bell shapped distribution 
+beta = 0.00625, 
+y = data_set
+)
+
+#giving three different initial values for three different chains
+data_init = list(list(
+mu = 0.5,
+sigma=0.002
+),
+list(
+mu=0.6,
+sigma=0.001
+),
+list(
+mu=0.4,
+sigma=0.002
+))
+```
+<p>
+Now I am going to run the model. 
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+# Running the model
+model <- jags.model(textConnection(model_string), inits = data_init,data = data_list, n.chains = 3, n.adapt= 5000)
+update(model, 5000); # Burnin for 5000 samples
+mcmc_samples <- coda.samples(model, variable.names=c("mu", "sigma"), n.iter=5000)
+```
+
+<p>
+Now I am going to use plot function to show the trace  and marginal densities of the two parameter.
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+plot(mcmc_samples)
+```
+<p>
+Now I am going to outline the summary of the **mcmc_samples**
+</p>
+```{r echo=FALSE, warning=FALSE}
+summary(mcmc_samples)
+```
+<h4>
+04. Perform a quick sensitivity analysis by slightly changing the priors and reporting on the impact you see on your inferential conclusions.
+</h4>
+
+<p>
+Let me change the values of the priors for this I will be changing the initial values of mu and sigma and as well as values actually given to our mu and sigma **a**, **b**, **alpha** and **beta** 
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+data_list= list(
+L = 208,
+a = 1,
+b = 0.00004,
+alpha = 0.4, # it is written somewhere that it is good value for bell shapped distribution 
+beta = 0.0064, 
+y = data_set
+)
+
+#giving three different initial values for three different chains
+data_init = list(list(
+mu = 0.2,
+sigma=0.001
+),
+list(
+mu=0.3,
+sigma=0.002
+),
+list(
+mu=0.7,
+sigma=0.003
+))
+```
+<p>
+Now I am going to run the model. 
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+# Running the model
+model <- jags.model(textConnection(model_string), inits = data_init,data = data_list, n.chains = 3, n.adapt= 5000)
+update(model, 5000); # Burnin for 5000 samples
+mcmc_samples <- coda.samples(model, variable.names=c("mu", "sigma"), n.iter=5000)
+```
+<p>
+Now I am going to use plot function to show the trace  and marginal densities of the two parameter.
+</p>
+
+```{r echo=FALSE, warning=FALSE}
+plot(mcmc_samples)
+```
+<p>
+Now I am going to outline the summary of the **mcmc_samples**
+</p>
+```{r echo=FALSE, warning=FALSE}
+summary(mcmc_samples)
+```
+**Conclusion:** I have changed initial values and values given to variables as described above but values for mu and sigma are almost the same as previous ones it proves that Central limit theorem is at work. Also, it might be completely acceptable that values given to variables are totally wrong. 
+
