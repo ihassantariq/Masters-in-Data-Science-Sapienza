@@ -1,2 +1,3 @@
-"0","d <- density(data_set) # returns the density data "
-"0","plot(d, main=""Density of Stellar Masses"") # plots the results"
+version https://git-lfs.github.com/spec/v1
+oid sha256:ba6f05d8c7435387dcee666fcc10d76b7ee770489e3736ed3cf85860be2e2681
+size 127
