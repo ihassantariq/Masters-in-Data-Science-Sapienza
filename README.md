@@ -44,7 +44,7 @@
 
 ## BIG DATA FOR OFFICIAL STATISTICS
 
-  [Project](TBD)
+  [Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/BDOS/Terrorism.ipynb)
 
 ## EARTH OBSERVATION DATA ANALYSIS
 
