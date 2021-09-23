@@ -16,21 +16,23 @@
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1
 
-1. [Homework - 1](https://github.com/shahzad744/sds-hw2) 
+1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW1) 
 
-2. [Homework - 2]()
+2. [Homework - 2](https://github.com/shahzad744/sds-hw2)
+
+3. [Homeowork - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW3)
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 2
 
-1. [Homework - 1]()
+1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework%20-1)
 
-2. [Homework - 2]() 
+2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework-2) 
 
-- [Final Project] ()
+- [Final Project] (https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project)
 
 ## CLOUD COMPUTING:
 
- - [Project]()
+ - [Project Report](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/CC/CC-Project-Report-Final.pdf)
 
 ## NEURAL NETWORKS FOR DATA SCIENCE APPLICATIONS
 
@@ -38,15 +40,23 @@
 
 ## DATA PRIVACY AND SECURITY 
 
-- [Project]()
+- [Project](https://github.com/ihassantariq/DPSElectionVoting)
 
 ## BIG DATA FOR OFFICIAL STATISTICS
 
 - [Project]()
 
+## EARTH OBSERVATION DATA ANALYSIS
+
+- [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK01.pdf)
+
+- [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK02.pdf)
+
+- [Homework -c3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK03.pdf)
+
 ## OPTIMIZATION METHODS FOR MACHINE LEARNING
 
-- [Project - 1]()
+- [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1)
 
 - [Project - 2]() 
 
