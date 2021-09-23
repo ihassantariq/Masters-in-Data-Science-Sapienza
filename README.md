@@ -14,6 +14,42 @@
 
 [Final Project](https://github.com/ihassantariq/FDS-Final-Project)
 
-## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY
+## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1
 
-1. [Homework - 2](https://github.com/shahzad744/sds-hw2) 
+1. [Homework - 1](https://github.com/shahzad744/sds-hw2) 
+
+2. [Homework - 2]()
+
+## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 2
+
+1. [Homework - 1]()
+
+2. [Homework - 2]() 
+
+- [Final Project] ()
+
+## CLOUD COMPUTING:
+
+ - [Project]()
+
+## NEURAL NETWORKS FOR DATA SCIENCE APPLICATIONS
+
+ - [Project](https://github.com/ihassantariq/NNDS_HW2_Dogs_Classifier)
+
+## DATA PRIVACY AND SECURITY 
+
+- [Project]()
+
+## BIG DATA FOR OFFICIAL STATISTICS
+
+- [Project]()
+
+## OPTIMIZATION METHODS FOR MACHINE LEARNING
+
+- [Project - 1]()
+
+- [Project - 2]() 
+
+
+
+
