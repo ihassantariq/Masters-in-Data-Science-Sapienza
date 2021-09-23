@@ -1,4 +1,4 @@
-# Masters in Data Science Program of Hafiz Muhammad Hassa - 1873829
+# Masters in Data Science Program of Hafiz Muhammad Hassan - 1873829
 
 ## ALGORITHMIC METHODS OF DATA MINING AND LABORATORY
 
