@@ -1,6 +1,6 @@
 # Masters in Data Science Program of Hafiz Muhammad Hassan - 1873829
 
-## ALGORITHMIC METHODS OF DATA MINING AND LABORATORY - 1st Semester
+## ALGORITHMIC METHODS OF DATA MINING AND LABORATORY -  1st Semester
 
 1. [Homework - 1](https://github.com/ihassantariq/ADM_HW1) - An analysis of Taxis in NYC. 
 
@@ -59,3 +59,5 @@
  1. [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1) - Answers to the questions given as Project
 
  2. [Project - 2](TBD) 
+
+## Training Camps attended SAS and ENEL 
