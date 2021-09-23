@@ -12,7 +12,7 @@
 
 ## FUNDAMENTALS OF DATA SCIENCE AND LABORATORY
 
-[Final Project](https://github.com/ihassantariq/FDS-Final-Project)
+- [Final Project](https://github.com/ihassantariq/FDS-Final-Project)
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1
 
@@ -28,7 +28,7 @@
 
 2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework-2) 
 
-- [Final Project] (https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project)
+- [Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project)
 
 ## CLOUD COMPUTING:
 
@@ -58,7 +58,7 @@
 
 - [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1)
 
-- [Project - 2]() 
+- [Project - 2](TBD) 
 
 
 
