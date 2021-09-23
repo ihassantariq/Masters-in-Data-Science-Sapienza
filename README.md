@@ -20,7 +20,7 @@
 
 2. [Homework - 2](https://github.com/shahzad744/sds-hw2)
 
-3. [Homeowork - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW3)
+3. [Homework - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW3)
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 2
 
@@ -52,14 +52,12 @@
 
 - [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK02.pdf)
 
-- [Homework -c3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK03.pdf)
+- [Homework - 3](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/EODA/HOMEWORK03.pdf)
 
 ## OPTIMIZATION METHODS FOR MACHINE LEARNING
 
 - [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1)
 
 - [Project - 2](TBD) 
-
-
 
 
