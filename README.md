@@ -1,6 +1,6 @@
 # Masters in Data Science Program of Hafiz Muhammad Hassan - 1873829
 
-## ALGORITHMIC METHODS OF DATA MINING AND LABORATORY -  1st Semester
+## ALGORITHMIC METHODS OF DATA MINING AND LABORATORY 
 
 1. [Homework - 1](https://github.com/ihassantariq/ADM_HW1) - An analysis of Taxis in NYC. 
 
@@ -10,11 +10,11 @@
 
 4. [Homework - 4](https://github.com/ihassantariq/grp28-hw5) - Building Graph from dataset and rank the graph based on node ranking algorithm. 
 
-## FUNDAMENTALS OF DATA SCIENCE AND LABORATORY - 1st Semester
+## FUNDAMENTALS OF DATA SCIENCE AND LABORATORY 
 
   [Final Project](https://github.com/ihassantariq/FDS-Final-Project) - Stacked regression technique using Lasso, Elastic and Kernel Ridge and Gradient Boosting and finding the house pricing. 
 
-## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1 - 1st Semester
+## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1
 
 1. [Homework - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%201/HW1) - Probablity based excersizes
 
