@@ -12,7 +12,7 @@
 
 ## FUNDAMENTALS OF DATA SCIENCE AND LABORATORY 
 
-  [Final Project](https://github.com/ihassantariq/FDS-Final-Project) - Stacked regression technique using Lasso, Elastic and Kernel Ridge and Gradient Boosting and finding the house pricing. 
+  [Course Final Project](https://github.com/ihassantariq/FDS-Final-Project) - Stacked regression technique using Lasso, Elastic and Kernel Ridge and Gradient Boosting and finding the house pricing. 
 
 ## STATISTICAL METHODS IN DATA SCIENCE AND LABORATORY 1
 
@@ -28,19 +28,19 @@
 
 2. [Homework - 2](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/SDS%20-%20Homework-2) - Using Dugong’s data answering specific questions. 
 
-  [Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project) - Fully Bayesian Analysis on FEV(forced expiratory volume) dataset. 
+  [Course Final Project](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/SDS%20-%202/Final%20Project) - Fully Bayesian Analysis on FEV(forced expiratory volume) dataset. 
 
 ## CLOUD COMPUTING:
 
-  [Project Report](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/CC/CC-Project-Report-Final.pdf) - Managing web application managed and scalable using AWS web services. 
+  [Course Final Project Report](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/blob/main/CC/CC-Project-Report-Final.pdf) - Managing web application managed and scalable using AWS web services. 
 
 ## NEURAL NETWORKS FOR DATA SCIENCE APPLICATIONS
 
-   [Project](https://github.com/ihassantariq/NNDS_HW2_Dogs_Classifier) - Classifying dogs breeds using transfer learning technqiue and attacking/saving the model after training. 
+   [Course Final Project](https://github.com/ihassantariq/NNDS_HW2_Dogs_Classifier) - Classifying dogs breeds using transfer learning technqiue and attacking/saving the model after training. 
 
 ## DATA PRIVACY AND SECURITY 
 
-  [Project](https://github.com/ihassantariq/DPSElectionVoting) - Decentralized application using etherium smart contracts for voting towards different candidates(GUI based on simple javascript and html) 
+  [Course Final Project](https://github.com/ihassantariq/DPSElectionVoting) - Decentralized application using etherium smart contracts for voting towards different candidates(GUI based on simple javascript and html) 
 
 ## BIG DATA FOR OFFICIAL STATISTICS
 
