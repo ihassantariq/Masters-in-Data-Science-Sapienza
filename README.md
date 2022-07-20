@@ -1,5 +1,12 @@
 # Masters in Data Science Program of Hafiz Muhammad Hassan - 1873829
 
+
+## Final Year Project based on Data Analytics
+
+1. [Analysis and Classification of 12 channel ECG signal using Edge Computing](https://github.com/ihassantariq/mdss/blob/main/Analysis_and_Classification_of_12_channel_ECG_signal_using_Edge_Computing_Final.pdf)
+2. [Fultter App for Best Models](https://github.com/ihassantariq/msc-thesis-tflite-flutter-app)
+
+
 ## ALGORITHMIC METHODS OF DATA MINING AND LABORATORY 
 
 1. [Homework - 1](https://github.com/ihassantariq/ADM_HW1) - An analysis of Taxis in NYC. 
@@ -57,7 +64,6 @@
 ## OPTIMIZATION METHODS FOR MACHINE LEARNING
 
  1. [Project - 1](https://github.com/ihassantariq/Masters-in-Data-Science-Sapienza/tree/main/OMML/Project1) - Answers to the questions given as Project
-
- 2. [Project - 2](TBD) 
+ 
 
 ## Training Camps attended SAS and ENEL 
